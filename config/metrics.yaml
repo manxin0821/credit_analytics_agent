@@ -1,0 +1,147 @@
+funnel:
+  n_applications:
+    label: "Number of Applications"
+    formula: "COUNT(loan_id)"
+    unit: count
+  n_approved:
+    label: "Number of Approved Applications"
+    formula: "COUNT(loan_id) WHERE status IN ['approved','funded']"
+    unit: count
+  approval_rate:
+    label: "Approval Rate"
+    formula: "n_approved / n_applications"
+    unit: pct
+  n_funded:
+    label: "Number of Funded Accounts"
+    formula: "COUNT(loan_id) WHERE status = 'funded'"
+    unit: count
+  funding_rate:
+    label: "Funding Rate"
+    formula: "n_funded / n_approved"
+    unit: pct
+  booked_balance:
+    label: "Booked Balance"
+    formula: "SUM(loan_amnt) WHERE status = 'funded'"
+    unit: usd
+  avg_approved_amount:
+    label: "Average Approved Amount"
+    formula: "AVG(loan_amnt) WHERE status IN ['approved','funded']"
+    unit: usd
+  avg_funded_amount:
+    label: "Average Funded Amount"
+    formula: "AVG(loan_amnt) WHERE status = 'funded'"
+    unit: usd
+  avg_apr:
+    label: "Average APR"
+    formula: "AVG(int_rate) WHERE status = 'funded'"
+    unit: pct
+
+revenue:
+  interest_revenue:
+    label: "Interest Revenue"
+    formula: "SUM(loan_amnt * int_rate * term_years)"
+    unit: usd
+  interchange_revenue:
+    label: "Interchange Revenue"
+    formula: "SUM(loan_amnt) * 0.015"
+    unit: usd
+  fee_revenue:
+    label: "Fee Revenue"
+    formula: "SUM(origination_fee)"
+    unit: usd
+  late_fee_revenue:
+    label: "Late Fee Revenue"
+    formula: "SUM(late_fees_received)"
+    unit: usd
+  total_revenue:
+    label: "Total Revenue"
+    formula: "interest_revenue + interchange_revenue + fee_revenue + late_fee_revenue"
+    unit: usd
+  net_revenue:
+    label: "Net Revenue"
+    formula: "total_revenue - actual_loss"
+    unit: usd
+  risk_adjusted_revenue:
+    label: "Risk-Adjusted Revenue"
+    formula: "total_revenue - expected_loss"
+    unit: usd
+  revenue_per_account:
+    label: "Revenue Per Account"
+    formula: "total_revenue / n_funded"
+    unit: usd
+  revenue_per_funded_dollar:
+    label: "Revenue Per Funded Dollar"
+    formula: "total_revenue / booked_balance"
+    unit: ratio
+
+loss:
+  dpd30_count:
+    label: "30 DPD Account Count"
+    formula: "COUNT WHERE mob_dpd_max >= 30 AND mob_dpd_max < 60"
+    unit: count
+  dpd30_rate:
+    label: "30 DPD Rate"
+    formula: "dpd30_count / n_funded"
+    unit: pct
+  dpd30_amount:
+    label: "30 DPD Amount"
+    formula: "SUM(outstanding_balance) WHERE mob_dpd_max >= 30 AND mob_dpd_max < 60"
+    unit: usd
+  dpd30_amount_rate:
+    label: "30 DPD Amount Rate"
+    formula: "dpd30_amount / booked_balance"
+    unit: pct
+  dpd60_count:
+    label: "60 DPD Account Count"
+    formula: "COUNT WHERE mob_dpd_max >= 60 AND mob_dpd_max < 90"
+    unit: count
+  dpd60_rate:
+    label: "60 DPD Rate"
+    formula: "dpd60_count / n_funded"
+    unit: pct
+  dpd60_amount:
+    label: "60 DPD Amount"
+    unit: usd
+  dpd60_amount_rate:
+    label: "60 DPD Amount Rate"
+    unit: pct
+  dpd90_count:
+    label: "90 DPD Account Count"
+    unit: count
+  dpd90_rate:
+    label: "90 DPD Rate"
+    unit: pct
+  dpd90_amount:
+    label: "90 DPD Amount"
+    unit: usd
+  dpd90_amount_rate:
+    label: "90 DPD Amount Rate"
+    unit: pct
+  writeoff_count:
+    label: "Write-Off Account Count"
+    formula: "COUNT WHERE loan_status = 'Charged Off'"
+    unit: count
+  writeoff_rate:
+    label: "Write-Off Rate"
+    formula: "writeoff_count / n_funded"
+    unit: pct
+  writeoff_amount:
+    label: "Write-Off Amount"
+    formula: "SUM(loan_amnt) WHERE loan_status = 'Charged Off'"
+    unit: usd
+  writeoff_amount_rate:
+    label: "Write-Off Amount Rate"
+    formula: "writeoff_amount / booked_balance"
+    unit: pct
+  expected_loss:
+    label: "Expected Loss"
+    formula: "SUM(pd * lgd * ead)"
+    unit: usd
+  actual_loss:
+    label: "Actual Loss"
+    formula: "writeoff_amount * lgd"
+    unit: usd
+  loss_rate:
+    label: "Loss Rate"
+    formula: "actual_loss / booked_balance"
+    unit: pct
