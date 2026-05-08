@@ -5,9 +5,8 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 # ── LLM ──────────────────────────────────────────────────────────────────────
 DEEPSEEK_API_KEY: str = os.environ.get("DEEPSEEK_API_KEY", "")
